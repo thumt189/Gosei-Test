@@ -1,0 +1,182 @@
+﻿@model Gosei.Models.ModelView
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<br />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            @Html.DisplayFor(model => model.Employee.FirstName) &nbsp;
+            @Html.DisplayFor(model => model.Employee.MiddleName) &nbsp;
+            @Html.DisplayFor(model => model.Employee.LastName)
+        </div>
+
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="first">First Name</label>
+                @Html.TextBoxFor(model => model.Employee.FirstName, null, new { @class = "form-control", @style = "max-width:100%;", @id = "first" })
+                @Html.ValidationMessageFor(model => model.Employee.FirstName, null, new { @style = "color:red;" })
+            </div>
+            <div class="form-group">
+                <label for="middle">Middle Name</label>
+                @Html.TextBoxFor(model => model.Employee.MiddleName, null, new { @class = "form-control", @style = "max-width:100%;", @id = "middle" })
+            </div>
+            <div class="form-group">
+                <label for="last">Last Name</label>
+                @Html.TextBoxFor(model => model.Employee.LastName, null, new { @class = "form-control", @style = "max-width:100%;", @id = "last" })
+                @Html.ValidationMessageFor(model => model.Employee.LastName, null, new { @style = "color:red;" })
+            </div>
+            <div class="form-group">
+                @{
+                    List<SelectListItem> gender = new List<SelectListItem>();
+                    gender.Add(new SelectListItem
+                    {
+                        Text = "Male",
+                        Value = "Male"
+                    });
+                    gender.Add(new SelectListItem
+                    {
+                        Text = "Female",
+                        Value = "Female",
+                    });
+                }
+
+                @Html.DropDownListFor(model => model.Employee.Gender, gender, "-- Select gender --", new { @class = "form-control", @style = "max-width:100%" })
+            </div>
+            <div class="form-group">
+                <label for="birthday">Birthday</label>
+                @Html.TextBoxFor(model => model.Employee.BirthDate, null, new { @class = "form-control", @type = "date", @style = "max-width:100%;", @id = "birthday" })
+                @Html.ValidationMessageFor(model => model.Employee.BirthDate, null, new { @style = "color:red;" })
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                @Html.TextBoxFor(model => model.Employee.Email, null, new { @class = "form-control", @style = "max-width:100%;", @id = "email" })
+            </div>
+            <div class="form-group">
+                <label for="note">Note</label>
+                @Html.TextAreaFor(model => model.Employee.Note, new { @class = "form-control", @style = "max-width:100%;", @id = "note", @rows = "4" })
+            </div>
+            <div class="form-group" style="float:right;">
+                <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index","Employee")';">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="btnAccept">Accept</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="padding: 5px 0px 5px 10px;">
+            <div class="row" style="margin-right:-30px;">
+                <div class="col-md-11" style="margin-top:3px;">
+                    <b class="text-center">Qualifications</b>
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-default btn-sm"
+                            data-target="#create_modal"
+                            data-toggle="modal"
+                            name=""
+                            id="btnShowModel">
+                        Add
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Institution</th>
+                        <th>City</th>
+                        <th>Valid From</th>
+                        <th>Valid To</th>
+                        <th>Is Valid?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var i = 0;
+                    }
+                    @foreach (var item in Model.EmployeeQualifis)
+                    {
+                        i++;
+                        string to_date = item.ValidTo.HasValue ? item.ValidTo.Value.ToString("MM/dd/yyyy") : "";
+                        string from_date = item.ValidFrom.HasValue ? item.ValidFrom.Value.ToString("MM/dd/yyyy") : "";
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.QuaName</td>
+                            <td>@item.Institution</td>
+                            <td>@item.City</td>
+                            <td>@from_date</td>
+                            <td>@to_date</td>
+                            <td>
+
+                                @{
+                                    var today = DateTime.Now.ToString("MM/dd/yyyy");
+                                    if (to_date == today)
+                                    {
+                                        <i class="glyphicon glyphicon-unchecked"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="glyphicon glyphicon-check"></i>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+<div class="modal fade" id="create_modal" tabindex="-1" role="modal" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Add Qualification</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" style="max-width:100%" value="" />
+                </div>
+                <div class="form-group">
+                    <label for="inst">Institution</label>
+                    <input type="text" class="form-control" style="max-width:100%" value="" />
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" style="max-width:100%" value="" />
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <label for="validfrom">Valid From</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="validto">Valid To</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="date" class="form-control" style="max-width:100%" value="" />
+                        </div>
+                        <div class="col-md-6">
+                            <input type="date" class="form-control" style="max-width:100%" value="" />
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                <button id="btnSave" type="button" class="btn btn-primary">Accept</button>
+            </div>
+        </div>
+    </div>
+</div>

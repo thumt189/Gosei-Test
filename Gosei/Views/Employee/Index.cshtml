@@ -1,0 +1,126 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<Gosei.Models.ModelEmployees>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<br />
+@using (Html.BeginForm())
+{
+    @*<h3 class="text-center">@TempData["message"]</h3>*@
+    <div class="input-group">
+        <input type="text" style="max-width:100%;" class="form-control" id="Key" name="Key" placeholder="Seach for First Name, Middle Name and Last Name" />
+        <div class="input-group-btn">
+            <button type="submit" class="btn btn-primary">Go!</button>
+        </div>
+    </div>
+    <br />
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="padding: 5px 0px 5px 10px;">
+            <div class="row" style="margin-right:-30px;">
+                <div class="col-md-11" style="margin-top:3px;">
+                    <b class="text-center" style="font-size:18px;">Employee</b>
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-default btn-sm"><a href="~/Employee/Create">Add</a></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <table class="table table-bordered, table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>@Html.ActionLink("First Name", "Index", new { sort = ViewBag.FirstNameSortParm })</th>
+                        <th>Middle Name</th>
+                        <th>@Html.ActionLink("Last Name", "Index", new { sort = ViewBag.LastNameSortParm })</th>
+                        <th>Gender</th>
+                        <th>Birth Date</th>
+                        <th>Email</th>
+                        <th>Note</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var i = 0;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            <td><a href="~/Employee/Edit/@item.Id">@item.FirstName</a></td>
+                            <td>@item.MiddleName</td>
+                            <td>@item.LastName</td>
+                            <td>@item.Gender</td>
+                            <td>@item.BirthDate</td>
+                            <td>@item.Email</td>
+                            <td>@item.Note</td>
+                            <td>
+                                <button class="btn btn-danger btn-xs"
+                                        data-target="#delete"
+                                        data-toggle="modal"
+                                        name="@item.Id"
+                                        id="btnShowModelDelete">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="text-center">
+        @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount*@
+
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    </div>
+
+}
+<script>
+    (function () {
+        //var isFirstLoad = @TempData["isFirstLoad"];
+        var message = "@TempData["message"]";
+
+        if (message) {
+            alert(message);
+        }
+    })();
+</script>
+<div class="modal fade" id="delete" tabindex="-1" role="delete" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Delete Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this Employee?
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" type="button" class="btn btn-default">Cancel</button>
+                <button id="btnContinueDelete" type="button" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var path_to_delete;
+        debugger;
+        $("#btnShowModelDelete").click(function (e) {
+            path_to_delete = $("#btnShowModelDelete").attr("name");
+        });
+
+        $('#btnContinueDelete').click(function () {
+            window.location = "/Employee/Delete/" + path_to_delete;
+        });
+    });
+
+</script>

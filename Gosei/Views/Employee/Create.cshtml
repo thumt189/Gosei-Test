@@ -1,0 +1,67 @@
+﻿@model Gosei.Models.ModelEmployees
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="first">First Name</label>
+                @Html.TextBoxFor(model => model.FirstName, null, new { @class = "form-control", @style = "max-width:100%;", @id = "first" })
+                @Html.ValidationMessageFor(model => model.FirstName, null, new { @style = "color:red;" })
+            </div>
+            <div class="form-group">
+                <label for="middle">Middle Name</label>
+                @Html.TextBoxFor(model => model.MiddleName, null, new { @class = "form-control", @style = "max-width:100%;", @id = "middle" })
+            </div>
+            <div class="form-group">
+                <label for="last">Last Name</label>
+                @Html.TextBoxFor(model => model.LastName, null, new { @class = "form-control", @style = "max-width:100%;", @id = "last" })
+                @Html.ValidationMessageFor(model => model.LastName, null, new { @style = "color:red;" })
+            </div>
+            <div class="form-group">
+                @{
+                    List<SelectListItem> gender = new List<SelectListItem>();
+                    gender.Add(new SelectListItem
+                    {
+                        Text = "Male",
+                        Value = "Male"
+                    });
+                    gender.Add(new SelectListItem
+                    {
+                        Text = "Female",
+                        Value = "Female",
+                    });
+                }
+
+                @Html.DropDownListFor(model => model.Gender, gender, "-- Select gender --", new { @class = "form-control", @style = "max-width:100%" })
+            </div>
+            <div class="form-group">
+                <label for="birthday">Birthday</label>
+                @Html.TextBoxFor(model => model.BirthDate, null, new { @class = "form-control", @type = "date", @style = "max-width:100%;", @id = "birthday" })
+                @Html.ValidationMessageFor(model => model.BirthDate, null, new { @style = "color:red;" })
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                @Html.TextBoxFor(model => model.Email, null, new { @class = "form-control", @style = "max-width:100%;", @id = "email" })
+            </div>
+            <div class="form-group">
+                <label for="note">Note</label>
+                @Html.TextAreaFor(model => model.Note, new { @class = "form-control", @style = "max-width:100%;", @id = "note", @rows = "4" })
+            </div>
+            <div class="form-group" style="float:right;">
+                <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index","Employee")';">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="btnAccept">Accept</button>
+            </div>
+        </div>
+    </div>
+}
+
